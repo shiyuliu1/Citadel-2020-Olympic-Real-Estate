@@ -1,0 +1,57 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- pp_complete %>% 
+  filter(as.Date(X3) >= as.Date('2005-01-01')) %>%
+  filter(as.Date(X3) <= as.Date('2019-12-01'))
+```
+```{r}
+colnames(data) <- c('Transaction_Unique_Identifier', 'Price', 'Date', 'Postcode', 'Property_Type', 'Old_New', 'Duration', 'Primary Address', 'Secondary Address', 'Street', 'Locality', 'City', 'District', 'County', 'PPD', 'Record_Status')
+```
+
+```{r}
+head(data)
+```
+
+```{r}
+data <- data %>%
+  filter(Duration == 'F') %>%
+  filter(Property_Type != 'O')
+head(data)
+```
+
+
+
+```{r}
+london_price <- data %>%
+  filter(City == 'LONDON')
+head(london_price)
+```
+
+```{r}
+summary(london_price)
+```
+
+
+```{r}
+sum(is.na(london_price$`Primary Address`))
+```
+```{r}
+london_price = london_price[!is.na(london_price$Postcode),]
+london_price = london_price[!is.na(london_price$`Primary Address`),]
+
+```
+
+
+```{r}
+write.csv(london_price, 'london_price_data.csv', row.names = FALSE)
+```
+
+
